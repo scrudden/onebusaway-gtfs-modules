@@ -28,6 +28,7 @@ import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
@@ -237,6 +238,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.findByNamedQueryAndNamedParam("routesForAgency", "agency",
         agency);
   }
+  
+  @Override
+  public List<FareProduct> getAllFareProducts() {  	
+	return _ops.findByNamedQuery("allFareProducts");    	
+  }
 
   @Override
   public List<Stop> getStopsForStation(Stop station) {
@@ -378,4 +384,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public <T> void clearAllEntitiesForType(Class<T> type) {
     _ops.clearAllEntitiesForType(type);
   }
+
+
 }

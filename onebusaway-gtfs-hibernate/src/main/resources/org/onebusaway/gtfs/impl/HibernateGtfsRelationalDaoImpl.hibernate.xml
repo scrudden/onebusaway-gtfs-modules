@@ -25,6 +25,9 @@
     <query name="routesForAgency" read-only="true">
         FROM Route route WHERE route.agency = :agency
     </query>
+    <query name="allFareProducts"  read-only="true">
+    	FROM FareProduct fareProduct
+    </query>
     <query name="stopsForStation" read-only="true">
         FROM Stop stop WHERE stop.parentStation = :stationId AND stop.id.agencyId = :agencyId
     </query>

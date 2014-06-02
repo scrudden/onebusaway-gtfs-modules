@@ -36,14 +36,26 @@
     <class name="org.onebusaway.gtfs.model.FareAttribute" table="gtfs_fare_attributes">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
-            <key-property name="id" />
-        </composite-id>
+            <key-property name="id" />   
+        </composite-id>                
         <property name="price" />
         <property name="currencyType" />
         <property name="paymentMethod" />
         <property name="transfers" />
         <property name="transferDuration" />
         <property name="journeyDuration" />
+        <many-to-one name="product">
+            <column name="product_agencyId" length="50" />
+            <column name="product_id" />
+         </many-to-one>
+    </class>
+    
+    <class name="org.onebusaway.gtfs.model.FareProduct" table="gtfs_fare_products">
+        <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
+            <key-property name="agencyId" length="50" />
+            <key-property name="id" />
+        </composite-id>
+        <property name="name" />        
     </class>
 
     <class name="org.onebusaway.gtfs.model.FareRule" table="gtfs_fare_rules">
@@ -89,6 +101,9 @@
         <property name="headwaySecs" />
         <property name="labelOnly" />
     </class>
+    
+  
+    
 
     <class name="org.onebusaway.gtfs.model.Pathway" table="gtfs_pathways">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
