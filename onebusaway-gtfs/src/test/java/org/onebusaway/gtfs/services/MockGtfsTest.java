@@ -41,6 +41,7 @@ public class MockGtfsTest {
     _gtfs.putAgencies(3, "agency_fare_url=http://agency-$0.gov/fares");
 
     GtfsRelationalDao dao = _gtfs.read();
+    
     assertEquals(3, dao.getAllAgencies().size());
   }
 

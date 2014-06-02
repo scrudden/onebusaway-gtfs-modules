@@ -22,6 +22,7 @@ import java.util.Map;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
@@ -104,6 +105,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<Route> getAllRoutes() {
     return getAllEntitiesForType(Route.class);
+  }
+  
+  public Collection<FareProduct> getAllFareProducts() {
+	return getAllEntitiesForType(FareProduct.class);	  
   }
 
   public Collection<ShapePoint> getAllShapePoints() {

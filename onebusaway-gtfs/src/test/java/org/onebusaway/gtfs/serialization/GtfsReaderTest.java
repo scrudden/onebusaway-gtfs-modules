@@ -43,6 +43,7 @@ import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
@@ -97,10 +98,12 @@ public class GtfsReaderTest {
         "WEEK,20120105,20120215,1,1,1,1,1,1,1");
     gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type",
         "WEEK,20120304,2");
+    gtfs.putLines("fare_products.txt","product_id, product_name","1,epurse");
     gtfs.putLines(
         "fare_attributes.txt",
-        "fare_id,price,currency_type,payment_method,transfers,transfer_duration,journey_duration",
-        "FA1,2.0,USD,1,2,60,61");
+        "fare_id,product_id,price,currency_type,payment_method,transfers,transfer_duration,journey_duration",
+        "FA1,1,2.0,USD,1,2,60,61");
+   
     gtfs.putLines("fare_rules.txt",
         "fare_id,route_id,origin_id,destination_id,contains_id",
         "FA1,R1,Z1,Z2,Z3");
@@ -125,7 +128,7 @@ public class GtfsReaderTest {
         "P1,S1,S1,60,61");
 
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
-
+   
     Agency agency = dao.getAgencyForId("1");
     assertEquals("1", agency.getId());
     assertEquals("Agency", agency.getName());
@@ -134,6 +137,10 @@ public class GtfsReaderTest {
     assertEquals("en", agency.getLang());
     assertEquals("555-1234", agency.getPhone());
     assertEquals("http://agency.gov/fares", agency.getFareUrl());
+    
+    List<FareProduct> fareProducts = dao.getAllFareProducts();
+    assertTrue(fareProducts.size()==1);
+    assertEquals(fareProducts.get(0).getName(),"epurse");
 
     Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
     assertEquals(new AgencyAndId("1", "S1"), stop.getId());
@@ -900,6 +907,8 @@ public class GtfsReaderTest {
     reader.setEntityStore(entityStore);
 
     reader.run();
+    entityStore.printEntities(); 
+    
     return entityStore;
   }
 

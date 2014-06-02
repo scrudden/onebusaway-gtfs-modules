@@ -18,132 +18,144 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 @CsvFields(filename = "fare_attributes.txt", required = false)
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  private static final int MISSING_VALUE = -999;
+	private static final int MISSING_VALUE = -999;
 
-  @CsvField(name = "fare_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId id;
+	@CsvField(name = "fare_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+	private AgencyAndId id;
 
-  private float price;
+	@CsvField(name = "product_id",  mapping = EntityFieldMappingFactory.class, optional=true)
+	private FareProduct product;
 
-  private String currencyType;
+	public FareProduct getProduct() {
+		return product;
+	}
 
-  private int paymentMethod;
+	public void setProduct(FareProduct product) {
+		this.product = product;
+	}
 
-  @CsvField(optional = true)
-  private int transfers = MISSING_VALUE;
+	private float price;
 
-  @CsvField(optional = true)
-  private int transferDuration = MISSING_VALUE;
+	private String currencyType;
 
-  /**
-   * This is a proposed extension to the GTFS spec
-   */
-  @CsvField(optional = true)
-  private int journeyDuration = MISSING_VALUE;
+	private int paymentMethod;
 
-  public FareAttribute() {
+	@CsvField(optional = true)
+	private int transfers = MISSING_VALUE;
 
-  }
+	@CsvField(optional = true)
+	private int transferDuration = MISSING_VALUE;
 
-  public FareAttribute(FareAttribute fa) {
-    this.id = fa.id;
-    this.price = fa.price;
-    this.currencyType = fa.currencyType;
-    this.paymentMethod = fa.paymentMethod;
-    this.transfers = fa.transfers;
-    this.transferDuration = fa.transferDuration;
-    this.journeyDuration = fa.journeyDuration;
-  }
+	/**
+	 * This is a proposed extension to the GTFS spec
+	 */
+	@CsvField(optional = true)
+	private int journeyDuration = MISSING_VALUE;
 
-  @Override
-  public AgencyAndId getId() {
-    return id;
-  }
+	public FareAttribute() {
 
-  @Override
-  public void setId(AgencyAndId id) {
-    this.id = id;
-  }
+	}
 
-  public float getPrice() {
-    return price;
-  }
+	public FareAttribute(FareAttribute fa) {
+		this.id = fa.id;
+		this.price = fa.price;
+		this.currencyType = fa.currencyType;
+		this.paymentMethod = fa.paymentMethod;
+		this.transfers = fa.transfers;
+		this.transferDuration = fa.transferDuration;
+		this.journeyDuration = fa.journeyDuration;
+	}
 
-  public void setPrice(float price) {
-    this.price = price;
-  }
+	@Override
+	public AgencyAndId getId() {
+		return id;
+	}
 
-  public String getCurrencyType() {
-    return currencyType;
-  }
+	@Override
+	public void setId(AgencyAndId id) {
+		this.id = id;
+	}
 
-  public void setCurrencyType(String currencyType) {
-    this.currencyType = currencyType;
-  }
+	public float getPrice() {
+		return price;
+	}
 
-  public int getPaymentMethod() {
-    return paymentMethod;
-  }
+	public void setPrice(float price) {
+		this.price = price;
+	}
 
-  public void setPaymentMethod(int paymentMethod) {
-    this.paymentMethod = paymentMethod;
-  }
+	public String getCurrencyType() {
+		return currencyType;
+	}
 
-  public boolean isTransfersSet() {
-    return transfers != MISSING_VALUE;
-  }
+	public void setCurrencyType(String currencyType) {
+		this.currencyType = currencyType;
+	}
 
-  public int getTransfers() {
-    return transfers;
-  }
+	public int getPaymentMethod() {
+		return paymentMethod;
+	}
 
-  public void setTransfers(int transfers) {
-    this.transfers = transfers;
-  }
+	public void setPaymentMethod(int paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
 
-  public void clearTransfers() {
-    this.transfers = MISSING_VALUE;
-  }
+	public boolean isTransfersSet() {
+		return transfers != MISSING_VALUE;
+	}
 
-  public boolean isTransferDurationSet() {
-    return transferDuration != MISSING_VALUE;
-  }
+	public int getTransfers() {
+		return transfers;
+	}
 
-  public int getTransferDuration() {
-    return transferDuration;
-  }
+	public void setTransfers(int transfers) {
+		this.transfers = transfers;
+	}
 
-  public void setTransferDuration(int transferDuration) {
-    this.transferDuration = transferDuration;
-  }
+	public void clearTransfers() {
+		this.transfers = MISSING_VALUE;
+	}
 
-  public void clearTransferDuration() {
-    this.transferDuration = MISSING_VALUE;
-  }
+	public boolean isTransferDurationSet() {
+		return transferDuration != MISSING_VALUE;
+	}
 
-  public boolean isJourneyDurationSet() {
-    return journeyDuration != MISSING_VALUE;
-  }
+	public int getTransferDuration() {
+		return transferDuration;
+	}
 
-  public int getJourneyDuration() {
-    return journeyDuration;
-  }
+	public void setTransferDuration(int transferDuration) {
+		this.transferDuration = transferDuration;
+	}
 
-  public void setJourneyDuration(int journeyDuration) {
-    this.journeyDuration = journeyDuration;
-  }
+	public void clearTransferDuration() {
+		this.transferDuration = MISSING_VALUE;
+	}
 
-  public void clearJourneyDuration() {
-    this.journeyDuration = MISSING_VALUE;
-  }
+	public boolean isJourneyDurationSet() {
+		return journeyDuration != MISSING_VALUE;
+	}
 
-  public String toString() {
-    return "<FareAttribute " + getId() + ">";
-  }
+	public int getJourneyDuration() {
+		return journeyDuration;
+	}
+
+	public void setJourneyDuration(int journeyDuration) {
+		this.journeyDuration = journeyDuration;
+	}
+
+	public void clearJourneyDuration() {
+		this.journeyDuration = MISSING_VALUE;
+	}
+
+	public String toString() {
+		return "<FareAttribute " + getId() + ">";
+	}
 }

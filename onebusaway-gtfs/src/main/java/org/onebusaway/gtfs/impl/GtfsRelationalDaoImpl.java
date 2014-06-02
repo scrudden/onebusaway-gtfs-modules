@@ -32,6 +32,7 @@ import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
@@ -52,329 +53,362 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
  * 
  */
 public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
-    GtfsMutableRelationalDao {
+		GtfsMutableRelationalDao {
 
-  private Map<AgencyAndId, List<String>> _tripAgencyIdsByServiceId = null;
+	private Map<AgencyAndId, List<String>> _tripAgencyIdsByServiceId = null;
 
-  private Map<Agency, List<Route>> _routesByAgency = null;
+	private Map<Agency, List<Route>> _routesByAgency = null;
 
-  private Map<Stop, List<Stop>> _stopsByStation = null;
+	private Map<Stop, List<Stop>> _stopsByStation = null;
 
-  private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
+	private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
 
-  private Map<Stop, List<StopTime>> _stopTimesByStop = null;
+	private Map<Stop, List<StopTime>> _stopTimesByStop = null;
 
-  private Map<Route, List<Trip>> _tripsByRoute = null;
+	private Map<Route, List<Trip>> _tripsByRoute = null;
 
-  private Map<AgencyAndId, List<Trip>> _tripsByShapeId = null;
+	private Map<AgencyAndId, List<Trip>> _tripsByShapeId = null;
 
-  private Map<AgencyAndId, List<Trip>> _tripsByServiceId = null;
+	private Map<AgencyAndId, List<Trip>> _tripsByServiceId = null;
 
-  private Map<AgencyAndId, List<Trip>> _tripsByBlockId = null;
+	private Map<AgencyAndId, List<Trip>> _tripsByBlockId = null;
 
-  private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = null;
+	private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = null;
 
-  private Map<Trip, List<Frequency>> _frequenciesByTrip = null;
+	private Map<Trip, List<Frequency>> _frequenciesByTrip = null;
 
-  private Map<AgencyAndId, List<ServiceCalendarDate>> _calendarDatesByServiceId = null;
+	private Map<AgencyAndId, List<ServiceCalendarDate>> _calendarDatesByServiceId = null;
 
-  private Map<AgencyAndId, List<ServiceCalendar>> _calendarsByServiceId = null;
+	private Map<AgencyAndId, List<ServiceCalendar>> _calendarsByServiceId = null;
 
-  private Map<FareAttribute, List<FareRule>> _fareRulesByFareAttribute = null;
+	private Map<FareAttribute, List<FareRule>> _fareRulesByFareAttribute = null;
 
-  public void clearAllCaches() {
-    _tripAgencyIdsByServiceId = clearMap(_tripAgencyIdsByServiceId);
-    _routesByAgency = clearMap(_routesByAgency);
-    _stopsByStation = clearMap(_stopsByStation);
-    _stopTimesByTrip = clearMap(_stopTimesByTrip);
-    _stopTimesByStop = clearMap(_stopTimesByStop);
-    _tripsByRoute = clearMap(_tripsByRoute);
-    _tripsByShapeId = clearMap(_tripsByShapeId);
-    _tripsByServiceId = clearMap(_tripsByServiceId);
-    _tripsByBlockId = clearMap(_tripsByBlockId);
-    _shapePointsByShapeId = clearMap(_shapePointsByShapeId);
-    _frequenciesByTrip = clearMap(_frequenciesByTrip);
-    _calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
-    _calendarsByServiceId = clearMap(_calendarsByServiceId);
-    _fareRulesByFareAttribute = clearMap(_fareRulesByFareAttribute);
-  }
+	private List<FareProduct> _fareProducts = null;
 
-  @Override
-  public List<String> getTripAgencyIdsReferencingServiceId(AgencyAndId serviceId) {
+	public void clearAllCaches() {
+		_tripAgencyIdsByServiceId = clearMap(_tripAgencyIdsByServiceId);
+		_routesByAgency = clearMap(_routesByAgency);
+		_stopsByStation = clearMap(_stopsByStation);
+		_stopTimesByTrip = clearMap(_stopTimesByTrip);
+		_stopTimesByStop = clearMap(_stopTimesByStop);
+		_tripsByRoute = clearMap(_tripsByRoute);
+		_tripsByShapeId = clearMap(_tripsByShapeId);
+		_tripsByServiceId = clearMap(_tripsByServiceId);
+		_tripsByBlockId = clearMap(_tripsByBlockId);
+		_shapePointsByShapeId = clearMap(_shapePointsByShapeId);
+		_frequenciesByTrip = clearMap(_frequenciesByTrip);
+		_calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
+		_calendarsByServiceId = clearMap(_calendarsByServiceId);
+		_fareRulesByFareAttribute = clearMap(_fareRulesByFareAttribute);
+		_fareProducts.clear();
+	}
 
-    if (_tripAgencyIdsByServiceId == null) {
+	@Override
+	public List<String> getTripAgencyIdsReferencingServiceId(
+			AgencyAndId serviceId) {
 
-      Map<AgencyAndId, Set<String>> agencyIdsByServiceIds = new HashMap<AgencyAndId, Set<String>>();
+		if (_tripAgencyIdsByServiceId == null) {
 
-      for (Trip trip : getAllTrips()) {
-        AgencyAndId tripId = trip.getId();
-        String tripAgencyId = tripId.getAgencyId();
-        AgencyAndId tripServiceId = trip.getServiceId();
-        Set<String> agencyIds = agencyIdsByServiceIds.get(tripServiceId);
-        if (agencyIds == null) {
-          agencyIds = new HashSet<String>();
-          agencyIdsByServiceIds.put(tripServiceId, agencyIds);
-        }
-        agencyIds.add(tripAgencyId);
-      }
+			Map<AgencyAndId, Set<String>> agencyIdsByServiceIds = new HashMap<AgencyAndId, Set<String>>();
 
-      _tripAgencyIdsByServiceId = new HashMap<AgencyAndId, List<String>>();
+			for (Trip trip : getAllTrips()) {
+				AgencyAndId tripId = trip.getId();
+				String tripAgencyId = tripId.getAgencyId();
+				AgencyAndId tripServiceId = trip.getServiceId();
+				Set<String> agencyIds = agencyIdsByServiceIds
+						.get(tripServiceId);
+				if (agencyIds == null) {
+					agencyIds = new HashSet<String>();
+					agencyIdsByServiceIds.put(tripServiceId, agencyIds);
+				}
+				agencyIds.add(tripAgencyId);
+			}
 
-      for (Map.Entry<AgencyAndId, Set<String>> entry : agencyIdsByServiceIds.entrySet()) {
-        AgencyAndId tripServiceId = entry.getKey();
-        List<String> agencyIds = new ArrayList<String>(entry.getValue());
-        Collections.sort(agencyIds);
-        _tripAgencyIdsByServiceId.put(tripServiceId, agencyIds);
-      }
-    }
+			_tripAgencyIdsByServiceId = new HashMap<AgencyAndId, List<String>>();
 
-    List<String> agencyIds = _tripAgencyIdsByServiceId.get(serviceId);
-    if (agencyIds == null)
-      agencyIds = new ArrayList<String>();
-    return agencyIds;
-  }
+			for (Map.Entry<AgencyAndId, Set<String>> entry : agencyIdsByServiceIds
+					.entrySet()) {
+				AgencyAndId tripServiceId = entry.getKey();
+				List<String> agencyIds = new ArrayList<String>(entry.getValue());
+				Collections.sort(agencyIds);
+				_tripAgencyIdsByServiceId.put(tripServiceId, agencyIds);
+			}
+		}
 
-  @Override
-  public List<Route> getRoutesForAgency(Agency agency) {
-    if (_routesByAgency == null)
-      _routesByAgency = mapToValueList(getAllRoutes(), "agency", Agency.class);
-    return list(_routesByAgency.get(agency));
-  }
+		List<String> agencyIds = _tripAgencyIdsByServiceId.get(serviceId);
+		if (agencyIds == null)
+			agencyIds = new ArrayList<String>();
+		return agencyIds;
+	}
 
-  @Override
-  public List<Stop> getStopsForStation(Stop station) {
-    if (_stopsByStation == null) {
-      _stopsByStation = new HashMap<Stop, List<Stop>>();
-      for (Stop stop : getAllStops()) {
-        if (stop.getLocationType() == 0 && stop.getParentStation() != null) {
-          Stop parentStation = getStopForId(new AgencyAndId(
-              stop.getId().getAgencyId(), stop.getParentStation()));
-          List<Stop> subStops = _stopsByStation.get(parentStation);
-          if (subStops == null) {
-            subStops = new ArrayList<Stop>(2);
-            _stopsByStation.put(parentStation, subStops);
-          }
-          subStops.add(stop);
-        }
-      }
-    }
-    return list(_stopsByStation.get(station));
-  }
+	@Override
+	public List<Route> getRoutesForAgency(Agency agency) {
+		if (_routesByAgency == null)
+			_routesByAgency = mapToValueList(getAllRoutes(), "agency",
+					Agency.class);
+		return list(_routesByAgency.get(agency));
+	}
+	
+	@Override
+	public List<FareProduct> getAllFareProducts() {
+		
+		if(_fareProducts==null) {	
+			_fareProducts=new ArrayList<FareProduct>();
+			Collection<FareProduct> allFareProducts = super.getAllFareProducts();
+			for (FareProduct fp : allFareProducts) {							
+				_fareProducts.add(fp);
+			}
+		}		
+		return _fareProducts;
+	}
 
-  @Override
-  public List<AgencyAndId> getAllShapeIds() {
-    ensureShapePointRelation();
-    return new ArrayList<AgencyAndId>(_shapePointsByShapeId.keySet());
-  }
+	@Override
+	public List<Stop> getStopsForStation(Stop station) {
+		if (_stopsByStation == null) {
+			_stopsByStation = new HashMap<Stop, List<Stop>>();
+			for (Stop stop : getAllStops()) {
+				if (stop.getLocationType() == 0
+						&& stop.getParentStation() != null) {
+					Stop parentStation = getStopForId(new AgencyAndId(stop
+							.getId().getAgencyId(), stop.getParentStation()));
+					List<Stop> subStops = _stopsByStation.get(parentStation);
+					if (subStops == null) {
+						subStops = new ArrayList<Stop>(2);
+						_stopsByStation.put(parentStation, subStops);
+					}
+					subStops.add(stop);
+				}
+			}
+		}
+		return list(_stopsByStation.get(station));
+	}
 
-  @Override
-  public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
-    ensureShapePointRelation();
-    return list(_shapePointsByShapeId.get(shapeId));
-  }
+	@Override
+	public List<AgencyAndId> getAllShapeIds() {
+		ensureShapePointRelation();
+		return new ArrayList<AgencyAndId>(_shapePointsByShapeId.keySet());
+	}
 
-  @Override
-  public List<StopTime> getStopTimesForTrip(Trip trip) {
+	@Override
+	public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
+		ensureShapePointRelation();
+		return list(_shapePointsByShapeId.get(shapeId));
+	}
 
-    if (_stopTimesByTrip == null) {
-      _stopTimesByTrip = mapToValueList(getAllStopTimes(), "trip", Trip.class);
-      for (List<StopTime> stopTimes : _stopTimesByTrip.values())
-        Collections.sort(stopTimes);
-    }
+	@Override
+	public List<StopTime> getStopTimesForTrip(Trip trip) {
 
-    return list(_stopTimesByTrip.get(trip));
-  }
+		if (_stopTimesByTrip == null) {
+			_stopTimesByTrip = mapToValueList(getAllStopTimes(), "trip",
+					Trip.class);
+			for (List<StopTime> stopTimes : _stopTimesByTrip.values())
+				Collections.sort(stopTimes);
+		}
 
-  @Override
-  public List<StopTime> getStopTimesForStop(Stop stop) {
-    if (_stopTimesByStop == null)
-      _stopTimesByStop = mapToValueList(getAllStopTimes(), "stop", Stop.class);
-    return list(_stopTimesByStop.get(stop));
-  }
+		return list(_stopTimesByTrip.get(trip));
+	}
 
-  @Override
-  public List<Trip> getTripsForRoute(Route route) {
-    if (_tripsByRoute == null)
-      _tripsByRoute = mapToValueList(getAllTrips(), "route", Route.class);
-    return list(_tripsByRoute.get(route));
-  }
+	@Override
+	public List<StopTime> getStopTimesForStop(Stop stop) {
+		if (_stopTimesByStop == null)
+			_stopTimesByStop = mapToValueList(getAllStopTimes(), "stop",
+					Stop.class);
+		return list(_stopTimesByStop.get(stop));
+	}
 
-  @Override
-  public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
-    if (_tripsByShapeId == null) {
-      _tripsByShapeId = mapToValueList(getAllTrips(), "shapeId",
-          AgencyAndId.class);
-    }
-    return list(_tripsByShapeId.get(shapeId));
-  }
+	@Override
+	public List<Trip> getTripsForRoute(Route route) {
+		if (_tripsByRoute == null)
+			_tripsByRoute = mapToValueList(getAllTrips(), "route", Route.class);
+		return list(_tripsByRoute.get(route));
+	}
 
-  @Override
-  public List<Trip> getTripsForServiceId(AgencyAndId serviceId) {
-    if (_tripsByServiceId == null) {
-      _tripsByServiceId = mapToValueList(getAllTrips(), "serviceId",
-          AgencyAndId.class);
-    }
-    return list(_tripsByServiceId.get(serviceId));
-  }
+	@Override
+	public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
+		if (_tripsByShapeId == null) {
+			_tripsByShapeId = mapToValueList(getAllTrips(), "shapeId",
+					AgencyAndId.class);
+		}
+		return list(_tripsByShapeId.get(shapeId));
+	}
 
-  @Override
-  public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
+	@Override
+	public List<Trip> getTripsForServiceId(AgencyAndId serviceId) {
+		if (_tripsByServiceId == null) {
+			_tripsByServiceId = mapToValueList(getAllTrips(), "serviceId",
+					AgencyAndId.class);
+		}
+		return list(_tripsByServiceId.get(serviceId));
+	}
 
-    if (_tripsByBlockId == null) {
-      _tripsByBlockId = new HashMap<AgencyAndId, List<Trip>>();
-      for (Trip trip : getAllTrips()) {
-        if (trip.getBlockId() != null) {
-          AgencyAndId bid = new AgencyAndId(trip.getId().getAgencyId(),
-              trip.getBlockId());
-          List<Trip> trips = _tripsByBlockId.get(bid);
-          if (trips == null) {
-            trips = new ArrayList<Trip>();
-            _tripsByBlockId.put(bid, trips);
-          }
-          trips.add(trip);
-        }
-      }
-    }
+	@Override
+	public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
 
-    return list(_tripsByBlockId.get(blockId));
-  }
+		if (_tripsByBlockId == null) {
+			_tripsByBlockId = new HashMap<AgencyAndId, List<Trip>>();
+			for (Trip trip : getAllTrips()) {
+				if (trip.getBlockId() != null) {
+					AgencyAndId bid = new AgencyAndId(trip.getId()
+							.getAgencyId(), trip.getBlockId());
+					List<Trip> trips = _tripsByBlockId.get(bid);
+					if (trips == null) {
+						trips = new ArrayList<Trip>();
+						_tripsByBlockId.put(bid, trips);
+					}
+					trips.add(trip);
+				}
+			}
+		}
 
-  @Override
-  public List<Frequency> getFrequenciesForTrip(Trip trip) {
-    if (_frequenciesByTrip == null)
-      _frequenciesByTrip = mapToValueList(getAllFrequencies(), "trip",
-          Trip.class);
-    return list(_frequenciesByTrip.get(trip));
-  }
+		return list(_tripsByBlockId.get(blockId));
+	}
 
-  @Override
-  public List<AgencyAndId> getAllServiceIds() {
-    ensureCalendarDatesByServiceIdRelation();
-    ensureCalendarsByServiceIdRelation();
-    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
-    serviceIds.addAll(_calendarDatesByServiceId.keySet());
-    serviceIds.addAll(_calendarsByServiceId.keySet());
-    return new ArrayList<AgencyAndId>(serviceIds);
-  }
+	@Override
+	public List<Frequency> getFrequenciesForTrip(Trip trip) {
+		if (_frequenciesByTrip == null)
+			_frequenciesByTrip = mapToValueList(getAllFrequencies(), "trip",
+					Trip.class);
+		return list(_frequenciesByTrip.get(trip));
+	}
 
-  @Override
-  public List<ServiceCalendarDate> getCalendarDatesForServiceId(
-      AgencyAndId serviceId) {
-    ensureCalendarDatesByServiceIdRelation();
-    return list(_calendarDatesByServiceId.get(serviceId));
-  }
+	@Override
+	public List<AgencyAndId> getAllServiceIds() {
+		ensureCalendarDatesByServiceIdRelation();
+		ensureCalendarsByServiceIdRelation();
+		Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+		serviceIds.addAll(_calendarDatesByServiceId.keySet());
+		serviceIds.addAll(_calendarsByServiceId.keySet());
+		return new ArrayList<AgencyAndId>(serviceIds);
+	}
 
-  @Override
-  public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId) {
-    ensureCalendarsByServiceIdRelation();
-    List<ServiceCalendar> calendars = list(_calendarsByServiceId.get(serviceId));
-    switch (calendars.size()) {
-      case 0:
-        return null;
-      case 1:
-        return calendars.get(0);
-    }
-    throw new MultipleCalendarsForServiceIdException(serviceId);
-  }
+	@Override
+	public List<ServiceCalendarDate> getCalendarDatesForServiceId(
+			AgencyAndId serviceId) {
+		ensureCalendarDatesByServiceIdRelation();
+		return list(_calendarDatesByServiceId.get(serviceId));
+	}
 
-  @Override
-  public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
-    if (_fareRulesByFareAttribute == null) {
-      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare",
-          FareAttribute.class);
-    }
-    return list(_fareRulesByFareAttribute.get(fareAttribute));
-  }
+	@Override
+	public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId) {
+		ensureCalendarsByServiceIdRelation();
+		List<ServiceCalendar> calendars = list(_calendarsByServiceId
+				.get(serviceId));
+		switch (calendars.size()) {
+		case 0:
+			return null;
+		case 1:
+			return calendars.get(0);
+		}
+		throw new MultipleCalendarsForServiceIdException(serviceId);
+	}
 
-  /****
-   * Private Methods
-   ****/
+	@Override
+	public List<FareRule> getFareRulesForFareAttribute(
+			FareAttribute fareAttribute) {
+		if (_fareRulesByFareAttribute == null) {
+			_fareRulesByFareAttribute = mapToValueList(getAllFareRules(),
+					"fare", FareAttribute.class);
+		}
+		return list(_fareRulesByFareAttribute.get(fareAttribute));
+	}
 
-  private void ensureCalendarDatesByServiceIdRelation() {
-    if (_calendarDatesByServiceId == null) {
-      _calendarDatesByServiceId = mapToValueList(getAllCalendarDates(),
-          "serviceId", AgencyAndId.class);
-    }
-  }
+	/****
+	 * Private Methods
+	 ****/
 
-  private void ensureCalendarsByServiceIdRelation() {
-    if (_calendarsByServiceId == null) {
-      _calendarsByServiceId = mapToValueList(getAllCalendars(), "serviceId",
-          AgencyAndId.class);
-    }
-  }
+	private void ensureCalendarDatesByServiceIdRelation() {
+		if (_calendarDatesByServiceId == null) {
+			_calendarDatesByServiceId = mapToValueList(getAllCalendarDates(),
+					"serviceId", AgencyAndId.class);
+		}
+	}
 
-  private void ensureShapePointRelation() {
-    if (_shapePointsByShapeId == null) {
-      _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId",
-          AgencyAndId.class);
-      for (List<ShapePoint> shapePoints : _shapePointsByShapeId.values())
-        Collections.sort(shapePoints);
-    }
-  }
+	private void ensureCalendarsByServiceIdRelation() {
+		if (_calendarsByServiceId == null) {
+			_calendarsByServiceId = mapToValueList(getAllCalendars(),
+					"serviceId", AgencyAndId.class);
+		}
+	}
 
-  private static <T> List<T> list(List<T> list) {
-    if (list == null)
-      list = new ArrayList<T>();
-    return Collections.unmodifiableList(list);
-  }
+	private void ensureShapePointRelation() {
+		if (_shapePointsByShapeId == null) {
+			_shapePointsByShapeId = mapToValueList(getAllShapePoints(),
+					"shapeId", AgencyAndId.class);
+			for (List<ShapePoint> shapePoints : _shapePointsByShapeId.values())
+				Collections.sort(shapePoints);
+		}
+	}
 
-  @SuppressWarnings("unchecked")
-  private static <K, V> Map<K, List<V>> mapToValueList(Iterable<V> values,
-      String property, Class<K> keyType) {
-    return mapToValueCollection(values, property, keyType,
-        new ArrayList<V>().getClass());
-  }
+	private static <T> List<T> list(List<T> list) {
+		if (list == null)
+			list = new ArrayList<T>();
+		return Collections.unmodifiableList(list);
+	}
 
-  @SuppressWarnings("unchecked")
-  private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
-      Iterable<V> values, String property, Class<K> keyType,
-      Class<CIMPL> collectionType) {
+	@SuppressWarnings("unchecked")
+	private static <K, V> Map<K, List<V>> mapToValueList(Iterable<V> values,
+			String property, Class<K> keyType) {
+		return mapToValueCollection(values, property, keyType,
+				new ArrayList<V>().getClass());
+	}
 
-    Map<K, C> byKey = new HashMap<K, C>();
-    SimplePropertyQuery query = new SimplePropertyQuery(property);
+	@SuppressWarnings("unchecked")
+	private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
+			Iterable<V> values, String property, Class<K> keyType,
+			Class<CIMPL> collectionType) {
 
-    for (V value : values) {
+		Map<K, C> byKey = new HashMap<K, C>();
+		SimplePropertyQuery query = new SimplePropertyQuery(property);
 
-      K key = (K) query.invoke(value);
-      C valuesForKey = byKey.get(key);
-      if (valuesForKey == null) {
+		for (V value : values) {
 
-        try {
-          valuesForKey = collectionType.newInstance();
-        } catch (Exception ex) {
-          throw new EntityInstantiationException(collectionType, ex);
-        }
+			K key = (K) query.invoke(value);
+			C valuesForKey = byKey.get(key);
+			if (valuesForKey == null) {
 
-        byKey.put(key, valuesForKey);
-      }
-      valuesForKey.add(value);
-    }
+				try {
+					valuesForKey = collectionType.newInstance();
+				} catch (Exception ex) {
+					throw new EntityInstantiationException(collectionType, ex);
+				}
 
-    return byKey;
-  }
+				byKey.put(key, valuesForKey);
+			}
+			valuesForKey.add(value);
+		}
 
-  private <K, V> Map<K, V> clearMap(Map<K, V> map) {
-    if (map != null)
-      map.clear();
-    return null;
-  }
+		return byKey;
+	}
 
-  private static final class SimplePropertyQuery {
+	private <K, V> Map<K, V> clearMap(Map<K, V> map) {
+		if (map != null)
+			map.clear();
+		return null;
+	}
 
-    private String[] _properties;
+	private static final class SimplePropertyQuery {
 
-    public SimplePropertyQuery(String query) {
-      _properties = query.split("\\.");
-    }
+		private String[] _properties;
 
-    public Object invoke(Object value) {
-      for (String property : _properties) {
-        BeanWrapper wrapper = BeanWrapperFactory.wrap(value);
-        value = wrapper.getPropertyValue(property);
-      }
-      return value;
-    }
-  }
+		public SimplePropertyQuery(String query) {
+			_properties = query.split("\\.");
+		}
+
+		public Object invoke(Object value) {
+			for (String property : _properties) {
+				BeanWrapper wrapper = BeanWrapperFactory.wrap(value);
+				value = wrapper.getPropertyValue(property);
+			}
+			return value;
+		}
+	}
+
+	public void printEntities() {
+		Set<Class<?>> classes = this.getEntityClasses();
+
+		for (Class c : classes) {
+			System.out.println(c.getName());
+		}
+	}
 
 }

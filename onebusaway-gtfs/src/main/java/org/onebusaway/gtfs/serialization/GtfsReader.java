@@ -33,6 +33,7 @@ import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
@@ -83,12 +84,14 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(StopTime.class);
     _entityClasses.add(ServiceCalendar.class);
     _entityClasses.add(ServiceCalendarDate.class);
+    _entityClasses.add(FareProduct.class);
     _entityClasses.add(FareAttribute.class);
     _entityClasses.add(FareRule.class);
     _entityClasses.add(Frequency.class);
     _entityClasses.add(Pathway.class);
     _entityClasses.add(Transfer.class);
     _entityClasses.add(FeedInfo.class);
+    
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
@@ -208,7 +211,7 @@ public class GtfsReader extends CsvEntityReader {
       if (id != null)
         return id;
     }
-
+    _log.info(_agencyIdsByEntityClassAndId.toString());
     throw new EntityReferenceNotFoundException(entityType, entityId);
   }
 
@@ -250,6 +253,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof FareAttribute) {
         FareAttribute fare = (FareAttribute) entity;
         registerAgencyId(FareAttribute.class, fare.getId());
+      } else if(entity instanceof FareProduct) {
+    	FareProduct fareproduct = (FareProduct) entity;
+    	registerAgencyId(FareProduct.class, fareproduct.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {
