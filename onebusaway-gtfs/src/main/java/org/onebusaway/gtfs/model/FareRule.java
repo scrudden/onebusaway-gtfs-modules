@@ -41,8 +41,19 @@ public final class FareRule extends IdentityBean<Integer> {
 
   @CsvField(optional = true)
   private String containsId;
+    
+  @CsvField(optional = true)
+  private String service_id;
+  
+  public String getService_id() {
+	return service_id;
+}
 
-  public FareRule() {
+public void setService_id(String service_id) {
+	this.service_id = service_id;
+}
+
+public FareRule() {
 
   }
 
