@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -90,7 +91,22 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(FareAttribute.class);
   }
 
-  public Collection<FareRule> getAllFareRules() {
+  @Override
+public Collection<FareAttribute> getFareAttributesForRule(FareRule fareRule) {
+
+	Collection<FareAttribute> fareAttributes=new ArrayList<FareAttribute>();  
+	for(FareAttribute fareAttribute: getAllFareAttributes())
+	{		
+				
+		if(fareAttribute.getFareRuleId().equals(fareRule.getFareId()))
+		{
+			fareAttributes.add(fareAttribute);	
+		}		
+	}
+	return fareAttributes;
+}
+
+public Collection<FareRule> getAllFareRules() {
     return getAllEntitiesForType(FareRule.class);
   }
 

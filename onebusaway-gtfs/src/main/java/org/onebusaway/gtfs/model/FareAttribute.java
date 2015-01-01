@@ -17,8 +17,11 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
 @CsvFields(filename = "fare_attributes.txt", required = false)
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
@@ -26,7 +29,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 	private static final long serialVersionUID = 1L;
 
 	private static final int MISSING_VALUE = -999;
-
+	
 	@CsvField(name = "fare_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
 	private AgencyAndId id;
 
@@ -39,6 +42,18 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
 	public void setProduct(FareProduct product) {
 		this.product = product;
+	}
+		
+	@CsvField(name = "fare_rule_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+	private AgencyAndId fareRuleId;
+	
+	
+	public AgencyAndId getFareRuleId() {
+		return fareRuleId;
+	}
+
+	public void setFareRuleId(AgencyAndId fareRuleId) {
+		this.fareRuleId = fareRuleId;
 	}
 
 	private float price;
@@ -58,7 +73,21 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 	 */
 	@CsvField(optional = true)
 	private int journeyDuration = MISSING_VALUE;
+	
 
+	@CsvField(optional=true, mapping = ServiceDateFieldMappingFactory.class)
+	private ServiceDate fareStartDate;
+	
+	@CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+	private int fareStartTime = MISSING_VALUE;
+
+	
+	@CsvField(optional = true, mapping = ServiceDateFieldMappingFactory.class)
+	private ServiceDate fareEndDate;
+	
+	@CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+	private int fareEndTime = MISSING_VALUE;
+	
 	public FareAttribute() {
 
 	}
@@ -71,6 +100,42 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 		this.transfers = fa.transfers;
 		this.transferDuration = fa.transferDuration;
 		this.journeyDuration = fa.journeyDuration;
+		this.fareStartDate=fa.fareStartDate;
+		this.fareStartTime=fa.fareStartTime;
+		this.fareEndDate=fa.fareEndDate;
+		this.fareEndTime=fa.fareEndTime;
+	}
+
+	public ServiceDate getFareEndDate() {
+		return fareEndDate;
+	}
+
+	public void setFareEndDate(ServiceDate fareEndDate) {
+		this.fareEndDate = fareEndDate;
+	}
+
+	public int getFareEndTime() {
+		return fareEndTime;
+	}
+
+	public void setFareEndTime(int fareEndTime) {
+		this.fareEndTime = fareEndTime;
+	}
+
+	public ServiceDate getFareStartDate() {
+		return fareStartDate;
+	}
+
+	public void setFareStartDate(ServiceDate fareStartDate) {
+		this.fareStartDate = fareStartDate;
+	}
+
+	public int getFareStartTime() {
+		return fareStartTime;
+	}
+
+	public void setFareStartTime(int fareStartTime) {
+		this.fareStartTime = fareStartTime;
 	}
 
 	@Override

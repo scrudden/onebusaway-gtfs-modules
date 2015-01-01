@@ -232,7 +232,7 @@ public class GtfsReaderTest {
 
     List<FareRule> rules = dao.getFareRulesForFareAttribute(fareAttribute);
     FareRule fareRule = rules.get(0);
-    assertEquals(fareAttribute, fareRule.getFare());
+    assertEquals(fareAttribute.getId().getId(), fareRule.getFareId());
     assertEquals(route, fareRule.getRoute());
     assertEquals("Z1", fareRule.getOriginId());
     assertEquals("Z2", fareRule.getDestinationId());
@@ -339,8 +339,8 @@ public class GtfsReaderTest {
 
     Collection<FareRule> fareRules = entityStore.getAllFareRules();
     assertEquals(1, fareRules.size());
-    FareRule fareRule = fareRules.iterator().next();
-    assertEquals(fare, fareRule.getFare());
+    FareRule fareRule = fareRules.iterator().next();    
+    assertEquals(fare.getId().getId(), fareRule.getFareId());
     assertNull(fareRule.getRoute());
     assertNull(fareRule.getContainsId());
     assertNull(fareRule.getDestinationId());
@@ -509,7 +509,9 @@ public class GtfsReaderTest {
     assertEquals(1, fareRuleMatches.size());
 
     FareRule fareRule = fareRuleMatches.get(0);
-    assertEquals(fareAttribute, fareRule.getFare());
+    
+    
+    assertEquals(fareAttribute.getId().getId(), fareRule.getFareId());
     assertEquals("1", fareRule.getOriginId());
     assertEquals("1", fareRule.getDestinationId());
     assertNull(fareRule.getRoute());
@@ -656,6 +658,10 @@ public class GtfsReaderTest {
     assertNull(stopTimeC.getStopHeadsign());
     assertEquals(3, stopTimeC.getStopSequence());
     assertEquals(trip12, stopTimeC.getTrip());
+    
+    FareRule fareRule=dao.getFareRuleForId(1);
+    Collection<FareAttribute> fareAttributes=dao.getFareAttributesForRule(fareRule);
+    assertEquals(2, fareAttributes.size());
   }
 
   @Test

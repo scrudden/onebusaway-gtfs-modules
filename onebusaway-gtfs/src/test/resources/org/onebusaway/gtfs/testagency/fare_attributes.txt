@@ -1,2 +1,3 @@
-fare_id,product_id,price,currency_type,payment_method,transfers,transfer_duration
-1,1,1.23,EUR,1,0,
+fare_id,fare_rule_id,product_id,price,currency_type,payment_method,transfers,transfer_duration
+1,1,1,1.23,EUR,1,0,
+2,1,2,1.23,EUR,1,0,

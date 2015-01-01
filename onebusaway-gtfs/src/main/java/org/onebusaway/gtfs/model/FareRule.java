@@ -17,6 +17,7 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 @CsvFields(filename = "fare_rules.txt", required = false)
@@ -27,8 +28,8 @@ public final class FareRule extends IdentityBean<Integer> {
   @CsvField(ignore = true)
   private int id;
 
-  @CsvField(name = "fare_id", mapping = EntityFieldMappingFactory.class)
-  private FareAttribute fare;
+  @CsvField(name = "fare_id", optional = false, mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId fareId;
 
   @CsvField(name = "route_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private Route route;
@@ -42,15 +43,19 @@ public final class FareRule extends IdentityBean<Integer> {
   @CsvField(optional = true)
   private String containsId;
     
-  @CsvField(optional = true)
-  private String service_id;
   
-  public String getService_id() {
-	return service_id;
+  @CsvField(optional = true, mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId serviceId;
+  
+
+  
+  
+public AgencyAndId getServiceId() {
+	return serviceId;
 }
 
-public void setService_id(String service_id) {
-	this.service_id = service_id;
+public void setServiceId(AgencyAndId serviceId) {
+	this.serviceId = serviceId;
 }
 
 public FareRule() {
@@ -59,7 +64,7 @@ public FareRule() {
 
   public FareRule(FareRule fr) {
     this.id = fr.id;
-    this.fare = fr.fare;
+    this.fareId = fr.fareId;
     this.route = fr.route;
     this.originId = fr.originId;
     this.destinationId = fr.destinationId;
@@ -76,15 +81,17 @@ public FareRule() {
     this.id = id;
   }
 
-  public FareAttribute getFare() {
-    return fare;
-  }
+ 
 
-  public void setFare(FareAttribute fare) {
-    this.fare = fare;
-  }
+  public AgencyAndId getFareId() {
+	return fareId;
+}
 
-  public Route getRoute() {
+public void setFareId(AgencyAndId fareId) {
+	this.fareId = fareId;
+}
+
+public Route getRoute() {
     return route;
   }
 

@@ -85,7 +85,8 @@ public class GtfsDaoImplTest {
     assertEquals(1849,fareRules.size());
     
     FareRule fareRule = dao.getFareRuleForId(1);
-    assertEquals(new AgencyAndId("BART","98"),fareRule.getFare().getId());
+    
+    assertEquals(new AgencyAndId("BART","98"),dao.getFareRuleForId(new Integer(fareRule.getFareId().getAgencyId()).intValue()));
     
     Collection<Frequency> frequencies = dao.getAllFrequencies();
     assertEquals(6,frequencies.size());
