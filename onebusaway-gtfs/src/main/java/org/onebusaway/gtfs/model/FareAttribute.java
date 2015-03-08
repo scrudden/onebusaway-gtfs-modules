@@ -26,7 +26,94 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 @CsvFields(filename = "fare_attributes.txt", required = false)
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
+	
+
 	private static final long serialVersionUID = 1L;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((currencyType == null) ? 0 : currencyType.hashCode());
+		result = prime * result + distanceMode;
+		result = prime * result + Float.floatToIntBits(distanceUnitPrice);
+		result = prime * result + distanceUnitStartOffset;
+		result = prime * result
+				+ ((fareEndDate == null) ? 0 : fareEndDate.hashCode());
+		result = prime * result + fareEndTime;
+		result = prime * result
+				+ ((fareRuleId == null) ? 0 : fareRuleId.hashCode());
+		result = prime * result
+				+ ((fareStartDate == null) ? 0 : fareStartDate.hashCode());
+		result = prime * result + fareStartTime;
+		result = prime * result + journeyDuration;
+		result = prime * result + paymentMethod;
+		result = prime * result + Float.floatToIntBits(price);
+		result = prime * result + ((product == null) ? 0 : product.hashCode());
+		result = prime * result + transferDuration;
+		result = prime * result + transfers;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FareAttribute other = (FareAttribute) obj;
+		if (currencyType == null) {
+			if (other.currencyType != null)
+				return false;
+		} else if (!currencyType.equals(other.currencyType))
+			return false;
+		if (distanceMode != other.distanceMode)
+			return false;
+		if (Float.floatToIntBits(distanceUnitPrice) != Float
+				.floatToIntBits(other.distanceUnitPrice))
+			return false;
+		if (distanceUnitStartOffset != other.distanceUnitStartOffset)
+			return false;
+		if (fareEndDate == null) {
+			if (other.fareEndDate != null)
+				return false;
+		} else if (!fareEndDate.equals(other.fareEndDate))
+			return false;
+		if (fareEndTime != other.fareEndTime)
+			return false;
+		if (fareRuleId == null) {
+			if (other.fareRuleId != null)
+				return false;
+		} else if (!fareRuleId.equals(other.fareRuleId))
+			return false;
+		if (fareStartDate == null) {
+			if (other.fareStartDate != null)
+				return false;
+		} else if (!fareStartDate.equals(other.fareStartDate))
+			return false;
+		if (fareStartTime != other.fareStartTime)
+			return false;
+		
+		if (journeyDuration != other.journeyDuration)
+			return false;
+		if (paymentMethod != other.paymentMethod)
+			return false;
+		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+			return false;
+		if (product == null) {
+			if (other.product != null)
+				return false;
+		} else if (!product.equals(other.product))
+			return false;
+		if (transferDuration != other.transferDuration)
+			return false;
+		if (transfers != other.transfers)
+			return false;
+		return true;
+	}
 
 	private static final int MISSING_VALUE = -999;
 	
@@ -88,6 +175,18 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 	@CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
 	private int fareEndTime = MISSING_VALUE;
 	
+	@CsvField(name = "distance_mode", optional = true)
+	private int distanceMode=MISSING_VALUE;
+	
+	@CsvField(name = "distance_unit_price", optional = true)
+	private float distanceUnitPrice=MISSING_VALUE;
+	
+	@CsvField(name = "distance_unit_start_offset", optional = true)
+	private int distanceUnitStartOffset = MISSING_VALUE;
+		
+	@CsvField(name = "discount", optional = true)
+	private int discount = MISSING_VALUE;
+	
 	public FareAttribute() {
 
 	}
@@ -104,6 +203,35 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 		this.fareStartTime=fa.fareStartTime;
 		this.fareEndDate=fa.fareEndDate;
 		this.fareEndTime=fa.fareEndTime;
+		this.distanceMode=fa.distanceMode;
+		this.distanceUnitPrice=fa.distanceUnitPrice;
+		this.distanceUnitStartOffset=fa.distanceUnitStartOffset;
+		this.discount=fa.discount;
+	}
+
+	
+	public int getDistanceMode() {
+		return distanceMode;
+	}
+
+	public void setDistanceMode(int distanceMode) {
+		this.distanceMode = distanceMode;
+	}
+
+	public float getDistanceUnitPrice() {
+		return distanceUnitPrice;
+	}
+
+	public void setDistanceUnitPrice(float distanceUnitPrice) {
+		this.distanceUnitPrice = distanceUnitPrice;
+	}
+
+	public int getDistanceUnitStartOffset() {
+		return distanceUnitStartOffset;
+	}
+
+	public void setDistanceUnitStartOffset(int distanceUnitStartOffset) {
+		this.distanceUnitStartOffset = distanceUnitStartOffset;
 	}
 
 	public ServiceDate getFareEndDate() {

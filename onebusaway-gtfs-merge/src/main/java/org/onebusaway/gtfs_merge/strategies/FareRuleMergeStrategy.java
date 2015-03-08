@@ -31,8 +31,10 @@ public class FareRuleMergeStrategy extends
 
   @Override
   protected boolean entitiesAreIdentical(FareRule fareRuleA, FareRule fareRuleB) {
-    if (!fareRuleA.getFare().equals(fareRuleB.getFare())) {
-      return false;
+  
+    if (!fareRuleA.getFareId().equals(fareRuleB.getFareId())) {
+        return false;
+      
     }
     if (!equals(fareRuleA.getRoute(), fareRuleB.getRoute())) {
       return false;
@@ -46,6 +48,7 @@ public class FareRuleMergeStrategy extends
     if (!equals(fareRuleA.getContainsId(), fareRuleB.getContainsId())) {
       return false;
     }
+   
     return true;
   }
 

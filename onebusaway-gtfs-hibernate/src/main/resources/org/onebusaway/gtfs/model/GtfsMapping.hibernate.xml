@@ -44,6 +44,16 @@
         <property name="transfers" />
         <property name="transferDuration" />
         <property name="journeyDuration" />
+        
+        <property name="fareStartDate" />
+        <property name="fareStartTime" />   
+        <property name="fareEndDate" />
+        <property name="fareEndTime" />
+        
+        <property name="distanceMode" />
+        <property name="distanceUnitPrice" />
+        <property name="distanceUnitStartOffset" />                	
+	
         <many-to-one name="product">
             <column name="product_agencyId" length="50" />
             <column name="product_id" />

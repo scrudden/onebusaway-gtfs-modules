@@ -385,5 +385,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     _ops.clearAllEntitiesForType(type);
   }
 
+@Override
+public Collection<FareAttribute> getFareAttributesForRule(FareRule fareRule) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 
 }

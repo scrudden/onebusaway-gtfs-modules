@@ -37,7 +37,8 @@ public class FareAttributeMergeStrategy extends
       FareAttribute oldAttribute, FareAttribute newAttribute) {
     GtfsRelationalDao source = context.getSource();
     for (FareRule fareRule : source.getFareRulesForFareAttribute(oldAttribute)) {
-      fareRule.setFare(newAttribute);
+      //fareRule.setFare(newAttribute);
+      fareRule.setFareId(newAttribute.getId());
     }
   }
 }

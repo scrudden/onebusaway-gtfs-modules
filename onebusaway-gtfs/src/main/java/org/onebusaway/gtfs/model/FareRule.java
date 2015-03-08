@@ -23,7 +23,66 @@ import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 @CsvFields(filename = "fare_rules.txt", required = false)
 public final class FareRule extends IdentityBean<Integer> {
 
-  private static final long serialVersionUID = 1L;
+  @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((containsId == null) ? 0 : containsId.hashCode());
+		result = prime * result
+				+ ((destinationId == null) ? 0 : destinationId.hashCode());
+		result = prime * result + ((fareId == null) ? 0 : fareId.hashCode());
+		result = prime * result
+				+ ((originId == null) ? 0 : originId.hashCode());
+		result = prime * result + ((route == null) ? 0 : route.hashCode());
+		result = prime * result
+				+ ((serviceId == null) ? 0 : serviceId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FareRule other = (FareRule) obj;
+		if (containsId == null) {
+			if (other.containsId != null)
+				return false;
+		} else if (!containsId.equals(other.containsId))
+			return false;
+		if (destinationId == null) {
+			if (other.destinationId != null)
+				return false;
+		} else if (!destinationId.equals(other.destinationId))
+			return false;
+		if (fareId == null) {
+			if (other.fareId != null)
+				return false;
+		} else if (!fareId.equals(other.fareId))
+			return false;
+		if (originId == null) {
+			if (other.originId != null)
+				return false;
+		} else if (!originId.equals(other.originId))
+			return false;
+		if (route == null) {
+			if (other.route != null)
+				return false;
+		} else if (!route.equals(other.route))
+			return false;
+		if (serviceId == null) {
+			if (other.serviceId != null)
+				return false;
+		} else if (!serviceId.equals(other.serviceId))
+			return false;
+		return true;
+	}
+
+private static final long serialVersionUID = 1L;
 
   @CsvField(ignore = true)
   private int id;
